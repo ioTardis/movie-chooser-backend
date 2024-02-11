@@ -15,7 +15,7 @@ public class TheMovieDbController {
                 .id(123)
                 .title("Test")
                 .description("Test description")
-                .genres(List.of(1, 2, 3))
+                .genre(List.of(1, 2, 3))
                 .build();
     }
 }
