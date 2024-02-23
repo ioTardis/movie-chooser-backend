@@ -1,6 +1,7 @@
 package org.iotardis.moviebackend.tmdb;
 
 import org.iotardis.moviebackend.tmdb.dto.MovieDto;
+import org.iotardis.moviebackend.tmdb.mapper.MovieResponseToMovieDto;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +18,7 @@ public class TheMovieDbController {
 
     @GetMapping("/tmdb/movie/{id}")
     public MovieDto getMovieById(@PathVariable int id) throws IOException {
-        return theMovieDbGateway.getMovieById(id);
+        var movie = theMovieDbGateway.getMovieById(id);
+        return MovieResponseToMovieDto.INSTANCE.movieResponseToMovieDto(movie);
     }
 }

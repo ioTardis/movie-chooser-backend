@@ -1,13 +1,14 @@
 package org.iotardis.moviebackend.tmdb;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.iotardis.moviebackend.tmdb.dto.MovieDto;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 public class TheMovieDbGateway {
@@ -20,7 +21,7 @@ public class TheMovieDbGateway {
         this.okHttpClient = okHttpClient;
     }
 
-    public MovieDto getMovieById(int id) throws IOException {
+    public MovieResponse getMovieById(int id) throws IOException {
         var request = new Request.Builder()
                 .url(baseUrl + "/movie/" + id)
                 .addHeader("accept", "application/json")
@@ -30,7 +31,21 @@ public class TheMovieDbGateway {
         try (Response response = okHttpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
 
-            return objectMapper.readValue(response.body().string(), MovieDto.class);
+            return objectMapper.readValue(response.body().string(), MovieResponse.class);
         }
     }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public record MovieResponse(
+            List<Genre> genres,
+            Integer id,
+            String overview,
+            String title
+    ) {}
+
+    public record Genre(
+            int id,
+            String name
+    ) {}
+
 }
